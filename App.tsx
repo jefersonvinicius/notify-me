@@ -1,9 +1,16 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Button} from 'react-native';
-
+import React, {useEffect, useState, useCallback} from 'react';
+import {View, StyleSheet, FlatList} from 'react-native';
 import PushNotification from 'react-native-push-notification';
 
+import Header from './src/components/Header';
+import FloatButton from './src/components/FloatButton';
+import COLORS from './src/assets/Colors';
+import {EmptyListContainer, EmptyListMessage} from './src/components/AppStyles';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 export default function App() {
+  const [notifications, setNotifications] = useState([]);
+
   useEffect(() => {
     PushNotification.configure({
       onNotification: (notification) => {
@@ -13,17 +20,24 @@ export default function App() {
     });
   }, []);
 
+  const renderListEmpty = useCallback(() => {
+    return (
+      <EmptyListContainer>
+        <Icon name="notifications" size={80} color="#aaa" />
+        <EmptyListMessage>Nenhum lembrete. </EmptyListMessage>
+      </EmptyListContainer>
+    );
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Button
-        title="Notify me"
-        onPress={() => {
-          PushNotification.localNotificationSchedule({
-            message: 'Teste',
-            date: new Date(Date.now() + 5000),
-          });
-        }}
+      <Header amountReminders={notifications.length} />
+      <FlatList
+        data={notifications}
+        contentContainerStyle={styles.list}
+        ListEmptyComponent={renderListEmpty}
       />
+      <FloatButton size={50} color={COLORS.primaryLight} />
     </View>
   );
 }
@@ -31,7 +45,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  list: {
+    flexGrow: 1,
   },
 });
