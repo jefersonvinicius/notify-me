@@ -13,7 +13,7 @@ export default function Input(props: Props) {
       <TextInput {...props} />
       {props.icon && (
         <IconContainer>
-          <Icon name={props.icon} size={20} color="#888" />
+          <Icon name={props.icon} size={20} color="#C9C9C9" />
         </IconContainer>
       )}
     </Container>
