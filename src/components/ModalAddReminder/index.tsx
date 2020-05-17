@@ -6,6 +6,8 @@ import Input from './Input';
 import {VerticalMargin} from '../GlobalStyles';
 import COLORS from '../../assets/Colors';
 import useLayoutAnimation from '../../hooks/useLayoutAnimation';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {format} from 'date-fns';
 
 interface Props {
   visible: boolean;
@@ -14,7 +16,11 @@ interface Props {
 }
 
 export default function ModalAddReminder({visible, onClose, onInsertPress}: Props) {
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [isOngoing, setIsOngoing] = useState(false);
+  const [hours, setHours] = useState('');
+  const [date, setDate] = useState('');
   const [reminder, setReminder] = useState('');
 
   const configureNextAnimation = useLayoutAnimation();
@@ -24,6 +30,20 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
     setIsOngoing((prev) => !prev);
   }, [configureNextAnimation]);
 
+  const handleChangeDate = useCallback((_, dateSelected) => {
+    setDatePickerVisible(false);
+    if (dateSelected) {
+      setDate(format(dateSelected, 'dd/MM/yyyy'));
+    }
+  }, []);
+
+  const handleChangeTime = useCallback((_, dateSelected) => {
+    setTimePickerVisible(false);
+    if (dateSelected) {
+      setHours(format(dateSelected, "'às' HH:mm"));
+    }
+  }, []);
+
   return (
     <Modal isVisible={visible} onBackButtonPress={onClose} onBackdropPress={onClose} style={styles.modal}>
       <Container>
@@ -32,9 +52,23 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
           <Input value={reminder} onChangeText={setReminder} placeholder="Lembrete" />
         </InputGroup>
         <InputGroup>
-          <Input icon="calendar" placeholder="__/__/__" />
+          <Input
+            icon="calendar"
+            value={date}
+            placeholder="__/__/__"
+            onPress={() => {
+              setDatePickerVisible(true);
+            }}
+          />
           <VerticalMargin margin={2.5} />
-          <Input icon="clock-outline" placeholder="00:00" />
+          <Input
+            icon="clock-outline"
+            value={hours}
+            placeholder="00:00"
+            onPress={() => {
+              setTimePickerVisible(true);
+            }}
+          />
         </InputGroup>
         <InputGroup>
           <Switch
@@ -46,6 +80,8 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
           <SwitchLabel>lembrete fixo</SwitchLabel>
         </InputGroup>
         {isOngoing && <Message>Lembretes fixos ficam na área de notificações até você seleciona-los</Message>}
+        {datePickerVisible && <DateTimePicker mode="date" value={new Date()} onChange={handleChangeDate} />}
+        {timePickerVisible && <DateTimePicker mode="time" value={new Date()} onChange={handleChangeTime} />}
       </Container>
     </Modal>
   );

@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^2.4.0",
     "@types/react-native-push-notification": "^3.0.9",
     "@types/styled-components": "^5.1.0",
     "date-fns": "^2.13.0",

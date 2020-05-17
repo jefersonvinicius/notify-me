@@ -15,3 +15,8 @@ export const TextInput = styled.TextInput`
 `;
 
 export const IconContainer = styled.View``;
+
+export const Button = styled.TouchableOpacity`
+  flex: 1;
+  flex-direction: row;
+`;
