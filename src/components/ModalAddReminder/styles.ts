@@ -23,9 +23,14 @@ export const InputGroup = styled.View`
 `;
 
 export const Message = styled.Text`
-  border-left-width: 4px;
+  border-left-width: 3px;
   border-left-color: #999;
   color: #888;
   padding: 5px 5px 5px 10px;
   font-size: 12px;
+`;
+
+export const Controls = styled.View`
+  flex-direction: row;
+  margin-top: 10px;
 `;

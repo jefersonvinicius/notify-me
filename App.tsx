@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, Alert} from 'react-native';
 import PushNotification from 'react-native-push-notification';
 
 import Header from './src/components/Header';
@@ -9,9 +9,16 @@ import {EmptyListContainer, EmptyListMessage} from './src/components/AppStyles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ModalAddReminder from './src/components/ModalAddReminder';
 
+interface INotification {
+  id: number;
+  description: string;
+  date: number;
+  cancelled: boolean;
+}
+
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<INotification>([]);
 
   useEffect(() => {
     PushNotification.configure({
@@ -31,6 +38,16 @@ export default function App() {
     );
   }, []);
 
+  const handleInsertNotification = useCallback((data) => {
+    const notification: INotification = {
+      id: Math.random(),
+      description: data.description,
+      date: data.date,
+      cancelled: false,
+    };
+    setNotifications((prev: INotification[]) => [...prev, notification]);
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header amountReminders={notifications.length} />
@@ -40,6 +57,7 @@ export default function App() {
         onClose={() => {
           setModalVisible(false);
         }}
+        onInsertPress={handleInsertNotification}
       />
       <FloatButton
         size={50}

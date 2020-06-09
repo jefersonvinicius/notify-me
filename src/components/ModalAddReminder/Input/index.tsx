@@ -9,7 +9,7 @@ interface Props extends TextInputProps {
 }
 
 export default function Input(props: Props) {
-  console.log(props.onPress);
+  // console.log(props.onPress);
   return (
     <Container>
       <Button onPress={props.onPress} disabled={props.onPress === undefined}>
