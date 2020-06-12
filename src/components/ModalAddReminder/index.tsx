@@ -68,7 +68,12 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
   }, [date, hours, onInsertPress, reminder, onClose]);
 
   return (
-    <Modal isVisible={visible} onBackButtonPress={onClose} onBackdropPress={onClose} style={styles.modal}>
+    <Modal
+      isVisible={visible}
+      onBackButtonPress={onClose}
+      onBackdropPress={onClose}
+      style={styles.modal}
+      useNativeDriver>
       <Container>
         <Title>Novo lembrete</Title>
         <InputGroup>
@@ -104,7 +109,15 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
         </InputGroup>
         {isOngoing && <Message>Lembretes fixos ficam na área de notificações até você seleciona-los</Message>}
         <Controls>
-          <Button type="secondary" color={COLORS.primaryLight} title="Fechar" onPress={onClose} />
+          <Button
+            type="secondary"
+            color={COLORS.primaryLight}
+            title="Fechar"
+            onPress={() => {
+              console.log('oi');
+              onClose();
+            }}
+          />
           <HorizontalMargin margin={2} />
           <Button type="primary" color={COLORS.primaryLight} title="Adicionar" onPress={handleInsertPress} />
         </Controls>

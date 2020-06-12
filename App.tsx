@@ -8,17 +8,27 @@ import COLORS from './src/assets/Colors';
 import {EmptyListContainer, EmptyListMessage} from './src/components/AppStyles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ModalAddReminder from './src/components/ModalAddReminder';
+import ReminderItem from './src/components/ReminderItem';
 
-interface INotification {
+export interface INotification {
   id: number;
   description: string;
   date: number;
   cancelled: boolean;
+  displayed: boolean;
 }
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [notifications, setNotifications] = useState<INotification>([]);
+  const [notifications, setNotifications] = useState<INotification[]>([
+    {
+      id: Math.random(),
+      date: Date.now(),
+      description: 'Teste',
+      cancelled: false,
+      displayed: false,
+    },
+  ]);
 
   useEffect(() => {
     PushNotification.configure({
@@ -44,14 +54,25 @@ export default function App() {
       description: data.description,
       date: data.date,
       cancelled: false,
+      displayed: false,
     };
     setNotifications((prev: INotification[]) => [...prev, notification]);
+  }, []);
+
+  const renderItemList = useCallback(({item}) => {
+    return <ReminderItem data={item} />;
   }, []);
 
   return (
     <View style={styles.container}>
       <Header amountReminders={notifications.length} />
-      <FlatList data={notifications} contentContainerStyle={styles.list} ListEmptyComponent={renderListEmpty} />
+      <FlatList
+        data={notifications}
+        contentContainerStyle={styles.list}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItemList}
+        ListEmptyComponent={renderListEmpty}
+      />
       <ModalAddReminder
         visible={modalVisible}
         onClose={() => {
@@ -73,8 +94,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   list: {
     flexGrow: 1,
+    // marginHorizontal: 10,
   },
 });
