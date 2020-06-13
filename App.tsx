@@ -1,7 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet, FlatList, Alert} from 'react-native';
-import PushNotification from 'react-native-push-notification';
-
+import {View, StyleSheet, FlatList} from 'react-native';
 import Header from './src/components/Header';
 import FloatButton from './src/components/FloatButton';
 import COLORS from './src/assets/Colors';
@@ -9,11 +7,14 @@ import {EmptyListContainer, EmptyListMessage} from './src/components/AppStyles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ModalAddReminder from './src/components/ModalAddReminder';
 import ReminderItem from './src/components/ReminderItem';
+import useLayoutAnimation from './src/hooks/useLayoutAnimation';
+import Notification from './src/services/Notification';
 
 export interface INotification {
   id: number;
   description: string;
   date: number;
+  ongoing: boolean;
   cancelled: boolean;
   displayed: boolean;
 }
@@ -25,17 +26,25 @@ export default function App() {
       id: Math.random(),
       date: Date.now(),
       description: 'Teste',
+      ongoing: false,
+      cancelled: false,
+      displayed: false,
+    },
+    {
+      id: Math.random(),
+      date: Date.now(),
+      description: 'Teste',
+      ongoing: false,
       cancelled: false,
       displayed: false,
     },
   ]);
 
+  const configureNextAnimation = useLayoutAnimation();
+
   useEffect(() => {
-    PushNotification.configure({
-      onNotification: (notification) => {
-        console.log(notification);
-      },
-      requestPermissions: false,
+    Notification.configure((notification) => {
+      console.log(notification.data);
     });
   }, []);
 
@@ -50,18 +59,33 @@ export default function App() {
 
   const handleInsertNotification = useCallback((data) => {
     const notification: INotification = {
-      id: Math.random(),
+      id: Math.floor(Math.random() * 1000),
       description: data.description,
       date: data.date,
+      ongoing: data.ongoing,
       cancelled: false,
       displayed: false,
     };
+    Notification.notifySchedule(notification);
     setNotifications((prev: INotification[]) => [...prev, notification]);
   }, []);
 
-  const renderItemList = useCallback(({item}) => {
-    return <ReminderItem data={item} />;
-  }, []);
+  const handleReminderDeletion = useCallback(
+    (reminderId: number) => {
+      const filtered = notifications.filter((notification) => notification.id !== reminderId);
+      Notification.cancelNofication(reminderId.toString());
+      configureNextAnimation('easeInEaseOut');
+      setNotifications([...filtered]);
+    },
+    [configureNextAnimation, notifications],
+  );
+
+  const renderItemList = useCallback(
+    ({item}) => {
+      return <ReminderItem data={item} onDeletePress={() => handleReminderDeletion(item.id)} />;
+    },
+    [handleReminderDeletion],
+  );
 
   return (
     <View style={styles.container}>

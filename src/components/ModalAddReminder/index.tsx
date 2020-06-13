@@ -13,6 +13,7 @@ import {format} from 'date-fns';
 interface InsertPressResponse {
   description: string;
   date: number;
+  ongoing: boolean;
 }
 
 interface Props {
@@ -63,9 +64,10 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
     onInsertPress({
       description: reminder,
       date: dateReminder.getTime(),
+      ongoing: isOngoing,
     });
     onClose();
-  }, [date, hours, onInsertPress, reminder, onClose]);
+  }, [date, hours, onInsertPress, reminder, onClose, isOngoing]);
 
   return (
     <Modal
@@ -114,7 +116,6 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
             color={COLORS.primaryLight}
             title="Fechar"
             onPress={() => {
-              console.log('oi');
               onClose();
             }}
           />

@@ -8,16 +8,17 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 interface Props {
   data: INotification;
+  onDeletePress: () => void;
 }
 
-export default function ReminderItem({data}: Props) {
+export default function ReminderItem({data, onDeletePress}: Props) {
   const renderRightActions = useCallback(() => {
     return (
-      <DeleteButton>
+      <DeleteButton onPress={onDeletePress}>
         <Icon name="delete" size={20} color="#fff" />
       </DeleteButton>
     );
-  }, []);
+  }, [onDeletePress]);
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
