@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 import {RectButton} from 'react-native-gesture-handler';
 
+interface IReminderDisplayed {
+  isDisplayed: boolean;
+}
+
 export const DeleteButton = styled(RectButton)`
   background-color: #ef5350;
   align-items: center;
@@ -13,21 +17,19 @@ export const DeleteText = styled.Text`
   font-weight: bold;
 `;
 
-export const Container = styled(RectButton)`
+export const Container = styled(RectButton)<IReminderDisplayed>`
   background-color: #fff;
-  /* border-top-color: #ccc;
-  border-bottom-color: #ccc;
-  border-top-width: 1px;
-  border-bottom-width: 1px; */
   padding: 10px;
+  opacity: ${(props) => (props.isDisplayed ? 0.5 : 1)};
 `;
 
 export const InfoContainer = styled.View``;
 
-export const Description = styled.Text`
+export const Description = styled.Text<IReminderDisplayed>`
   font-size: 16px;
   margin-bottom: 5px;
   color: #444;
+  text-decoration-line: ${(props) => (props.isDisplayed ? 'line-through' : 'none')};
 `;
 
 export const IconContainer = styled.View`

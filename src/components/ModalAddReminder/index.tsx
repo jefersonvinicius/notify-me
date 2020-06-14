@@ -61,6 +61,12 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
       hoursSelected.getHours(),
       hoursSelected.getMinutes(),
     );
+
+    setIsOngoing(false);
+    setHours(0);
+    setDate(0);
+    setReminder('');
+
     onInsertPress({
       description: reminder,
       date: dateReminder.getTime(),

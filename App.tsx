@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import Header from './src/components/Header';
 import FloatButton from './src/components/FloatButton';
 import COLORS from './src/assets/Colors';
@@ -9,75 +9,94 @@ import ModalAddReminder from './src/components/ModalAddReminder';
 import ReminderItem from './src/components/ReminderItem';
 import useLayoutAnimation from './src/hooks/useLayoutAnimation';
 import Notification from './src/services/Notification';
+import {getReminders, storeReminders} from './src/services/storage';
+import {isAfter} from 'date-fns';
 
 export interface INotification {
   id: number;
   description: string;
   date: number;
   ongoing: boolean;
-  cancelled: boolean;
   displayed: boolean;
 }
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [notifications, setNotifications] = useState<INotification[]>([
-    {
-      id: Math.random(),
-      date: Date.now(),
-      description: 'Teste',
-      ongoing: false,
-      cancelled: false,
-      displayed: false,
-    },
-    {
-      id: Math.random(),
-      date: Date.now(),
-      description: 'Teste',
-      ongoing: false,
-      cancelled: false,
-      displayed: false,
-    },
-  ]);
+  const [reminders, setReminders] = useState<INotification[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const configureNextAnimation = useLayoutAnimation();
 
   useEffect(() => {
+    async function prepareReminders() {
+      const remindersFromStorage = await getReminders();
+      const remindersDisplayed: INotification[] = [];
+      const remindersNotDisplayed: INotification[] = [];
+      remindersFromStorage.forEach((reminder) => {
+        if (isAfter(Date.now(), reminder.date)) {
+          remindersDisplayed.push(reminder);
+        } else {
+          remindersNotDisplayed.push(reminder);
+        }
+      });
+      setReminders([...remindersNotDisplayed, ...remindersDisplayed]);
+      configureNextAnimation('easeInEaseOut');
+      setLoading(false);
+    }
+
     Notification.configure((notification) => {
       console.log(notification.data);
     });
+
+    prepareReminders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (reminders !== null) {
+      storeReminders(reminders);
+    }
+  }, [reminders]);
 
   const renderListEmpty = useCallback(() => {
     return (
       <EmptyListContainer>
-        <Icon name="notifications" size={80} color="#aaa" />
-        <EmptyListMessage>Nenhum lembrete</EmptyListMessage>
+        {loading ? (
+          <ActivityIndicator size={40} color={COLORS.primaryLight} />
+        ) : (
+          <>
+            <Icon name="notifications" size={80} color="#aaa" />
+            <EmptyListMessage>Nenhum lembrete</EmptyListMessage>
+          </>
+        )}
       </EmptyListContainer>
     );
-  }, []);
+  }, [loading]);
 
-  const handleInsertNotification = useCallback((data) => {
-    const notification: INotification = {
-      id: Math.floor(Math.random() * 1000),
-      description: data.description,
-      date: data.date,
-      ongoing: data.ongoing,
-      cancelled: false,
-      displayed: false,
-    };
-    Notification.notifySchedule(notification);
-    setNotifications((prev: INotification[]) => [...prev, notification]);
-  }, []);
+  const handleInsertNotification = useCallback(
+    (data) => {
+      const notification: INotification = {
+        id: Math.floor(Math.random() * 1000),
+        description: data.description,
+        date: data.date,
+        ongoing: data.ongoing,
+        displayed: false,
+      };
+      Notification.notifySchedule(notification);
+      configureNextAnimation('easeInEaseOut');
+      setReminders((prev) => [...(prev || []), notification]);
+    },
+    [configureNextAnimation],
+  );
 
   const handleReminderDeletion = useCallback(
     (reminderId: number) => {
-      const filtered = notifications.filter((notification) => notification.id !== reminderId);
+      const filtered = reminders?.filter((reminder) => reminder.id !== reminderId) || [];
       Notification.cancelNofication(reminderId.toString());
       configureNextAnimation('easeInEaseOut');
-      setNotifications([...filtered]);
+      setReminders([...filtered]);
     },
-    [configureNextAnimation, notifications],
+    [configureNextAnimation, reminders],
   );
 
   const renderItemList = useCallback(
@@ -89,13 +108,15 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Header amountReminders={notifications.length} />
+      <Header amountReminders={reminders?.length || 0} />
       <FlatList
-        data={notifications}
-        contentContainerStyle={styles.list}
+        data={reminders}
+        contentContainerStyle={styles.listContent}
+        style={styles.list}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItemList}
         ListEmptyComponent={renderListEmpty}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
       <ModalAddReminder
         visible={modalVisible}
@@ -121,7 +142,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   list: {
+    borderTopColor: '#bbb',
+    borderTopWidth: 1,
+  },
+  listContent: {
     flexGrow: 1,
-    // marginHorizontal: 10,
+  },
+  separator: {
+    backgroundColor: '#ddd',
+    width: '100%',
+    height: StyleSheet.hairlineWidth,
   },
 });
