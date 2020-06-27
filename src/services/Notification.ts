@@ -11,6 +11,7 @@ class Notification {
 
   notifySchedule(notification: INotification) {
     PushNotification.localNotificationSchedule({
+      title: 'Lembrete',
       id: notification.id.toString(),
       message: notification.description,
       ongoing: notification.ongoing,

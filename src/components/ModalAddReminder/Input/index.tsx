@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, TextInput, IconContainer, Button} from './styles';
+import {Container, TextInput, IconContainer, Button, Placeholder, Value} from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TextInputProps} from 'react-native';
 
@@ -8,13 +8,16 @@ interface Props extends TextInputProps {
   onPress?: () => void;
 }
 
-export default function Input(props: Props) {
-  // console.log(props.onPress);
+export default function Input({onPress, ...props}: Props) {
   return (
     <Container>
-      <Button onPress={props.onPress} disabled={props.onPress === undefined}>
-        <TextInput {...props} editable={props.onPress === undefined} />
-      </Button>
+      {onPress === undefined ? (
+        <TextInput {...props} />
+      ) : (
+        <Button onPress={onPress}>
+          {props.value === '' ? <Placeholder>{props.placeholder}</Placeholder> : <Value>{props.value}</Value>}
+        </Button>
+      )}
       {props.icon && (
         <IconContainer>
           <Icon name={props.icon} size={20} color="#C9C9C9" />

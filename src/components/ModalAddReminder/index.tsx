@@ -115,7 +115,11 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
           />
           <SwitchLabel>lembrete fixo</SwitchLabel>
         </InputGroup>
-        {isOngoing && <Message>Lembretes fixos ficam na área de notificações até você seleciona-los</Message>}
+        {isOngoing && (
+          <Message>
+            Lembretes fixos não podem ser removidos da área de notificações. Apenas depois de pressiona-las
+          </Message>
+        )}
         <Controls>
           <Button
             type="secondary"
@@ -128,8 +132,12 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
           <HorizontalMargin margin={2} />
           <Button type="primary" color={COLORS.primaryLight} title="Adicionar" onPress={handleInsertPress} />
         </Controls>
-        {datePickerVisible && <DateTimePicker mode="date" value={new Date()} onChange={handleChangeDate} />}
-        {timePickerVisible && <DateTimePicker mode="time" value={new Date()} onChange={handleChangeTime} />}
+        {datePickerVisible && (
+          <DateTimePicker mode="date" value={new Date()} minimumDate={new Date()} onChange={handleChangeDate} />
+        )}
+        {timePickerVisible && (
+          <DateTimePicker mode="time" value={new Date()} minimumDate={new Date()} onChange={handleChangeTime} />
+        )}
       </Container>
     </Modal>
   );
