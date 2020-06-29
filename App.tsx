@@ -108,7 +108,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Header amountReminders={reminders?.length || 0} />
+      <Header amountReminders={reminders?.length || 0} loading={loading} />
       <FlatList
         data={reminders}
         contentContainerStyle={styles.listContent}

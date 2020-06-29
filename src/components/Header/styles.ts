@@ -15,6 +15,7 @@ export const Title = styled.Text`
 `;
 
 export const AmountReminders = styled.Text`
-  margin-top: -5px;
+  margin-top: -4px;
   color: ${COLORS.primaryLight};
+  font-size: 13px;
 `;

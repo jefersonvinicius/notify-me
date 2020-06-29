@@ -1,16 +1,25 @@
 import React from 'react';
 import {Container, Title, TitleContainer, AmountReminders} from './styles';
+import {ActivityIndicator} from 'react-native';
+import COLORS from '../../assets/Colors';
 
 interface Props {
   amountReminders: number;
+  loading?: boolean;
 }
 
-export default function Header({amountReminders}: Props) {
+export default function Header({amountReminders, loading}: Props) {
   return (
     <Container>
       <TitleContainer>
         <Title>Notify Me</Title>
-        <AmountReminders>{amountReminders} lembretes</AmountReminders>
+        {loading ? (
+          <AmountReminders>Carregando...</AmountReminders>
+        ) : (
+          <AmountReminders>
+            {amountReminders} {amountReminders === 1 ? 'lembrete' : 'lembretes'}
+          </AmountReminders>
+        )}
       </TitleContainer>
     </Container>
   );
