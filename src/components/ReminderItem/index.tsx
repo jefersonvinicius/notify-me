@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {
   Container,
   InfoContainer,
@@ -8,6 +8,7 @@ import {
   IconContainer,
   DeleteButton,
   DescriptionContainer,
+  DistanceLabel,
 } from './styles';
 import {format, isAfter} from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,6 +16,9 @@ import OIcon from 'react-native-vector-icons/Octicons';
 import {INotification} from '../../../App';
 import {HorizontalMargin} from '../GlobalStyles';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {formatDistanceToNowStrict} from 'date-fns/esm';
+import {pt} from 'date-fns/locale';
+import useLayoutAnimation from '../../hooks/useLayoutAnimation';
 
 interface Props {
   data: INotification;
@@ -22,6 +26,9 @@ interface Props {
 }
 
 export default function ReminderItem({data, onDeletePress}: Props) {
+  const [showDistance, setShowDistance] = useState(false);
+  const configureAnimation = useLayoutAnimation();
+
   const isDisplayed = useMemo(() => {
     return isAfter(Date.now(), data.date);
   }, [data]);
@@ -34,12 +41,19 @@ export default function ReminderItem({data, onDeletePress}: Props) {
     );
   }, [onDeletePress]);
 
+  const toggleDistanceTime = useCallback(() => {
+    configureAnimation('easeInEaseOut');
+    setShowDistance((state) => !state);
+  }, [configureAnimation]);
+
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <Container>
+      <Container onPress={toggleDistanceTime}>
         <InfoContainer isDisplayed={isDisplayed}>
           <DescriptionContainer>
-            <Description isDisplayed={isDisplayed}>{data.description}</Description>
+            <Description isDisplayed={isDisplayed} numberOfLines={showDistance ? 1000 : 1}>
+              {data.description}
+            </Description>
             {data.ongoing && <OIcon name="pin" size={15} color="#777" />}
           </DescriptionContainer>
           <DateContainer>
@@ -53,6 +67,11 @@ export default function ReminderItem({data, onDeletePress}: Props) {
               <DateLabel>{format(data.date, 'HH:mm')}</DateLabel>
             </IconContainer>
           </DateContainer>
+          {showDistance && (
+            <IconContainer>
+              <DistanceLabel>{formatDistanceToNowStrict(data.date, {addSuffix: true, locale: pt})}</DistanceLabel>
+            </IconContainer>
+          )}
         </InfoContainer>
       </Container>
     </Swipeable>

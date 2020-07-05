@@ -86,7 +86,7 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
       <Container>
         <Title>Novo lembrete</Title>
         <InputGroup>
-          <Input value={reminder} onChangeText={setReminder} placeholder="Lembrete" />
+          <Input value={reminder} onChangeText={setReminder} placeholder="Lembrete" maxLength={500} />
         </InputGroup>
         <InputGroup>
           <Input

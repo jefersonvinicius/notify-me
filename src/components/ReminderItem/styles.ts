@@ -27,6 +27,7 @@ export const InfoContainer = styled.View<IReminderDisplayed>`
 `;
 
 export const Description = styled.Text<IReminderDisplayed>`
+  flex: 1;
   font-size: 16px;
   margin-bottom: 5px;
   color: #444;
@@ -56,4 +57,9 @@ export const DescriptionContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+`;
+
+export const DistanceLabel = styled.Text`
+  font-size: 11px;
+  color: #444;
 `;
