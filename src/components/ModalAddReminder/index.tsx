@@ -81,7 +81,8 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
       style={styles.modal}
-      useNativeDriver>
+      swipeDirection="down"
+      onSwipeComplete={onClose}>
       <Container>
         <Title>Novo lembrete</Title>
         <InputGroup>
@@ -117,19 +118,10 @@ export default function ModalAddReminder({visible, onClose, onInsertPress}: Prop
         </InputGroup>
         {isOngoing && (
           <Message>
-            Lembretes fixos não podem ser removidos da área de notificações. Apenas depois de pressiona-las
+            Lembretes fixos não podem ser removidos da área de notificações. Apenas depois de pressioná-los
           </Message>
         )}
         <Controls>
-          <Button
-            type="secondary"
-            color={COLORS.primaryLight}
-            title="Fechar"
-            onPress={() => {
-              onClose();
-            }}
-          />
-          <HorizontalMargin margin={2} />
           <Button type="primary" color={COLORS.primaryLight} title="Adicionar" onPress={handleInsertPress} />
         </Controls>
         {datePickerVisible && (

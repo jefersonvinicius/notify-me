@@ -17,18 +17,20 @@ export const DeleteText = styled.Text`
   font-weight: bold;
 `;
 
-export const Container = styled(RectButton)<IReminderDisplayed>`
+export const Container = styled(RectButton)`
   background-color: #fff;
   padding: 10px;
-  opacity: ${(props) => (props.isDisplayed ? 0.5 : 1)};
 `;
 
-export const InfoContainer = styled.View``;
+export const InfoContainer = styled.View<IReminderDisplayed>`
+  opacity: ${(props) => (props.isDisplayed ? 0.5 : 1)};
+`;
 
 export const Description = styled.Text<IReminderDisplayed>`
   font-size: 16px;
   margin-bottom: 5px;
   color: #444;
+  opacity: ${(props) => (props.isDisplayed ? 0.5 : 1)};
   text-decoration-line: ${(props) => (props.isDisplayed ? 'line-through' : 'none')};
 `;
 
@@ -49,3 +51,9 @@ export const DateLabel = styled.Text`
 `;
 
 export const ControlsContainer = styled.View``;
+
+export const DescriptionContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
