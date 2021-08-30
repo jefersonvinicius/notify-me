@@ -6,7 +6,7 @@
 Notify Me
 </h1>
 
-<p align="center">Um aplicativo para agendar lembretes feito em React Native.</p>
+<p align="center">A application to schedule reminders, built with React Native.</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT">
@@ -21,12 +21,12 @@ Notify Me
   <img src="demo.gif">
 </p>
 
-# Principais bibliotecas usadas:
+# Libs
 - [react-native-push-notification](https://github.com/zo0r/react-native-push-notification)
 - [date-fns](https://date-fns.org/)
 - [styled-components](https://styled-components.com/)
 
-# Licença
+# License
 Copyright 2020 - Jeferson Vinícius
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
