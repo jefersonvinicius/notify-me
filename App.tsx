@@ -20,6 +20,11 @@ export interface INotification {
   displayed: boolean;
 }
 
+Notification.configure((notification) => {
+  console.log('Notification received!');
+  console.log(notification);
+});
+
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [reminders, setReminders] = useState<INotification[] | null>(null);
@@ -43,10 +48,6 @@ export default function App() {
       configureNextAnimation('easeInEaseOut');
       setLoading(false);
     }
-
-    Notification.configure((notification) => {
-      console.log(notification.data);
-    });
 
     prepareReminders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
